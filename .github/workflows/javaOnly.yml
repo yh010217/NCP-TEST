@@ -1,0 +1,7 @@
+
+name: First CICD Deploy
+
+on:
+  push:
+    branches:
+      - java-only
