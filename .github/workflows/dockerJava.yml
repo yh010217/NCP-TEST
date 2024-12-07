@@ -31,4 +31,4 @@ jobs:
       # Docker Hub에 이미지 푸시
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
