@@ -1,0 +1,1 @@
+아무것도 없으면 application.yml이 들어갈 곳이 없으니까
