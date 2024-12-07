@@ -14,13 +14,6 @@ jobs:
       - name: Github Repository에 올린 파일 불러오기
         uses: actions/checkout@v2
 
-      # 근데 말이야.. checkout이라는 라이브러리 써서
-      # 내 깃허브 프로젝트 잘 가져온거 맞음....? -> 테스트 해보기
-      - name: Checkout Library Test
-        run: |
-          ls
-          pwd
-
       - name: JDK 17 버전 설치
         uses: actions/setup-java@v4
         with:
@@ -38,6 +31,11 @@ jobs:
       - name: 빌드된 파일 이름 변경하기
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
 
+      - name: Install NCP CLI
+        run: |
+          curl -s https://static.ncloud.com/cli/install.sh | bash
+        
+
       - name: Get Actions IP - 이 IP로 EC2 보안그룹 임시 변경
         id: ip
         uses: haythem/public-ip@v1.3
@@ -45,5 +43,5 @@ jobs:
       - name: NCP에 ip 추가..?
         run: |
           ncloud vserver addAccessControlGroupInboundRule \
-          --regionCode KR --vpcNo ***04 --accessControlGroupNo ***63 \
+          --regionCode KR --vpcNo 86263 --accessControlGroupNo ***63 \
           --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"

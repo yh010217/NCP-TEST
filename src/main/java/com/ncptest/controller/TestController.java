@@ -12,4 +12,8 @@ public class TestController {
     public String home(){
         return "Hello, World NCP";
     }
+    @GetMapping("/hello/docker")
+    public String helloDocker(){
+        return "Hello, World Docker";
+    }
 }
