@@ -3,7 +3,7 @@
 set timeout -1
 
 # Ncloud 설정
-spawn ./ncloud configure
+spawn ./ncp_cli/cli/cli_linux/ncloud configure
 expect "Ncloud Access Key Id [] :"
 send "${{ secrets.CLI_CONFIGURE_ACCESS_KEY }}\r"
 expect "Ncloud Secret Access Key [] :"

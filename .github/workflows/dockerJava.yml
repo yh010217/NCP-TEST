@@ -46,7 +46,9 @@ jobs:
           sudo apt-get update && sudo apt-get install -y expect
 
       - name: cli configure 작성 sh 실행
-        run: ./ncp_cli_configure.sh
+        run: |
+          chmod +x ./ncp_cli_configure
+          ./ncp_cli_configure.sh
 
       - name: 됐는지 확인
         run: |
