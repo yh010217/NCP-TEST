@@ -57,11 +57,7 @@ jobs:
       - name: ACG 에 깃허브 액션 IP 인바운드 규칙 추가
         run: |
           
-          echo "디버깅중"
-          cd /home
-          ls -all
-          echo "${{ secrets.NCLOUD_CONFIGURE }}" > /home/.ncloud/configure
-          echo "디버깅중"
+          echo "${{ secrets.NCLOUD_CONFIGURE }}" > ~/.ncloud/configure
 
           cd ~/ncp_cli/cli/cli_linux
           ./ncloud vserver addAccessControlGroupInboundRule \
