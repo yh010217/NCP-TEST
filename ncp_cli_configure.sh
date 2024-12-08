@@ -1,9 +1,11 @@
 #!/usr/bin/expect -f
 
+
 set timeout -1
 
 # Ncloud 설정
-spawn ./ncp_cli/cli/cli_linux/ncloud configure
+cd ncp_cli/cli/cli_linux
+spawn ./ncloud configure
 expect "Ncloud Access Key Id [] :"
 send "test access\r"
 expect "Ncloud Secret Access Key [] :"
