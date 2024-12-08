@@ -47,7 +47,7 @@ jobs:
 
       - name: cli configure 작성 sh 실행
         run: |
-          chmod +x ./ncp_cli_configure
+          chmod +x ./ncp_cli_configure.sh
           ./ncp_cli_configure.sh
 
       - name: 됐는지 확인
