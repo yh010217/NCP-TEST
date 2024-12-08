@@ -47,7 +47,7 @@ jobs:
 
       - name : CLI Credential 세팅
         run: |
-          mkdir /home/.ncloud
+          sudo mkdir /home/.ncloud
           echo -e "${{ secrets.NCLOUD_CONFIGURE }}" /home/.ncloud/configure
 
       - name: 깃허브 액션 IP 구하기
