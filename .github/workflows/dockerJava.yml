@@ -49,7 +49,9 @@ jobs:
         run: |
           cd ~/ncp_cli/cli/cli_linux
           echo -e "${{ secrets.NCLOUD_ACCESS_KEY }}\n${{ secrets.NCLOUD_ACCESS_KEY }}\n\n" | ./ncloud configure
-
+          
+          cd /home
+          ls -all
 
       - name: 깃허브 액션 IP 구하기
         id: ip
