@@ -16,7 +16,7 @@ jobs:
 
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
-        uses: appleboy/ssh-action@v1.1.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_HOST_IP }}
           username: ${{ secrets.NCP_USERNAME }}
