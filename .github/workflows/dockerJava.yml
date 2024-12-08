@@ -59,7 +59,7 @@ jobs:
           
           echo "디버깅중"
           cd /home
-          ls-all
+          ls -all
           echo "${{ secrets.NCLOUD_CONFIGURE }}" > /home/.ncloud/configure
           echo "디버깅중"
 
