@@ -41,14 +41,13 @@ jobs:
           wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
           unzip *.zip
           rm *.zip
+          cd ~
+          ls -all
+          cd ~/.ncloud
+          ls
           mv CLI_* cli
           cd cli/cli_linux
-          sudo apt-get update && sudo apt-get install -y expect
-
-      - name: cli configure 작성 sh 실행
-        run: |
-          chmod +x ./ncp_cli_configure.sh
-          ./ncp_cli_configure.sh
+          
 
       - name: 됐는지 확인
         run: |
