@@ -32,3 +32,25 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+            - name: Get Github Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: NCP CLI 다운, NCP CLI & Credentials 세팅
+        run: |
+          mkdir ncp_cli
+          cd ncp_cli
+          wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
+          unzip *.zip
+          rm *.zip
+          mv CLI_* cli
+          cd cli/cli_linux
+          sudo apt-get update && sudo apt-get install -y expect
+
+      - name: cli configure 작성 sh 실행
+        run: ./ncp_cli_configure.sh
+
+      - name: 됐는지 확인
+        run: |
+          cd ncp_cli/cli/cli_linux
+          .ncloud configure list
