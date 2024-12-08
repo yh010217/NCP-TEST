@@ -49,6 +49,9 @@ jobs:
         run: |
           cd ~/ncp_cli/cli/cli_linux
           echo -e "\n\n\n" | ./ncloud configure
+          
+          cd ~
+          ls -all
 
       - name: 깃허브 액션 IP 구하기
         id: ip
@@ -56,6 +59,9 @@ jobs:
 
       - name: ACG 에 깃허브 액션 IP 인바운드 규칙 추가
         run: |
+          
+          cd ~
+          ls -all
           
           echo "${{ secrets.NCLOUD_CONFIGURE }}" > ~/.ncloud/configure
 
