@@ -1,6 +1,6 @@
 # 폴더 구조는 .github/workflows 구조로. 근데 파일 이름은 걍 적어도 됨
 
-name: JAVA ONLY DEPLOY
+name: DOCKER JAVA DEPLOY
 
 on:
   push:
@@ -37,9 +37,24 @@ jobs:
       - name: NCP CLI 다운, 이름 편하게 cli라고만 하고 끝내기
         run: |
           cd ~
+          
+          echo "=============디버깅중================"
+          echo "=============디버깅중================"
+          echo "=============디버깅중================"
+          echo "~ 위치가 어디야"
+          pwd
+          
+          echo "home 에서 봐야되나"
+          ls .. -all
+          
+          
+          echo "=============디버깅끝================"
+          echo "=============디버깅끝================"
+          echo "=============디버깅끝================"
+          
           mkdir ncp_cli
           cd ncp_cli
-          wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
+#          wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
           unzip *.zip
           rm *.zip
           mv CLI_* cli
