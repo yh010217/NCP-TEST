@@ -14,6 +14,56 @@ jobs:
       - name: Github Repository에 올린 파일 불러오기
         uses: actions/checkout@v2
 
+      - name: application.yml 파일 만들기
+        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
+
+      - name: 도커 이미지 만들기
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest .
+
+      - name: 도커 로그인
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_LOGINID }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+
+      - name: 도커 이미지 푸시하기
+        run: |
+         docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+
+      - name: NCP CLI 다운로드, 이름 편하게 cli라고만 하고 끝내기
+        run: |
+          cd ~
+
+          mkdir ncp_cli
+          cd ncp_cli
+          wget -q https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
+          unzip -q *.zip
+          rm *.zip
+          mv CLI_* cli
+
+      - name: CLI Credential 세팅
+        run: |
+          cd ~/ncp_cli/cli/cli_linux
+          echo -e "\n\n\n" | ./ncloud configure
+
+      - name: 깃허브 액션 IP 구하기
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: ACG 에 깃허브 액션 IP 인바운드 규칙 추가
+        run: |
+
+          echo "${{ secrets.NCLOUD_CONFIGURE }}" > ~/.ncloud/configure
+
+          cd ~/ncp_cli/cli/cli_linux
+          ./ncloud vserver addAccessControlGroupInboundRule \
+          --regionCode KR \
+          --vpcNo ${{ secrets.NCLOUD_VPC_NO }} \
+          --accessControlGroupNo ${{ secrets.NCLOUD_ACG_NO }} \
+          --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"
+
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
         uses: appleboy/ssh-action@master
@@ -22,74 +72,9 @@ jobs:
           username: ${{ secrets.NCP_USERNAME }}
           password: ${{ secrets.NCP_PASSWORD }}
           script_stop: true
-          script: |
-            echo "hello"
-
-#
-#      - name: application.yml 파일 만들기
-#        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
-#
-#      - name: 도커 이미지 만들기
-#        run: |
-#          docker build -t ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest .
-#
-#      - name: 도커 로그인
-#        uses: docker/login-action@v2
-#        with:
-#          username: ${{ secrets.DOCKER_LOGINID }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#
-#      - name: 도커 이미지 푸시하기
-#        run: |
-#         기docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
-#            - name: Get Github Actions IP
-#
-#      - name: NCP CLI 다운로드, 이름 편하게 cli라고만 하고 끝내기
-#        run: |
-#          cd ~
-#
-#          mkdir ncp_cli
-#          cd ncp_cli
-#          wget -q https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
-#          unzip -q *.zip
-#          rm *.zip
-#          mv CLI_* cli
-#
-#      - name: CLI Credential 세팅
-#        run: |
-#          cd ~/ncp_cli/cli/cli_linux
-#          echo -e "\n\n\n" | ./ncloud configure
-#
-#      - name: 깃허브 액션 IP 구하기
-#        id: ip
-#        uses: haythem/public-ip@v1.3
-#
-#      - name: ACG 에 깃허브 액션 IP 인바운드 규칙 추가
-#        run: |
-#
-#          echo "${{ secrets.NCLOUD_CONFIGURE }}" > ~/.ncloud/configure
-#
-#          cd ~/ncp_cli/cli/cli_linux
-#          ./ncloud vserver addAccessControlGroupInboundRule \
-#          --regionCode KR \
-#          --vpcNo ${{ secrets.NCLOUD_VPC_NO }} \
-#          --accessControlGroupNo ${{ secrets.NCLOUD_ACG_NO }} \
-#          --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"
-#
-#
-#      - name: SSH로 EC2 원격 접속해서 도커 실행시키기
-#        uses: appleboy/ssh-action@v1.1.0
-#        with:
-#          host: ${{ secrets.NCP_HOST_IP }}
-#          username: ${{ secrets.EC2_USERNAME }}
-#          key: ${{ secrets.EC2_PRIVATE_KEY }}
-#          script_stop: true
-#          script: |
-#            rm -rf /home/ubuntu/project/current
-#            mkdir /home/ubuntu/project/current
-#            mv /home/ubuntu/project/will/project.jar /home/ubuntu/project/current/project.jar
-#            cd /home/ubuntu/project/current
-#            sudo fuser -k -n tcp 8080 || true
-#            sudo nohup java -jar project.jar > ./output.log 2>&1 &
-#            rm -rf /home/ubuntu/project/will
+          script: |            
+            docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+            docker stop my-container || true
+            docker rm my-container || true
+            docker run -d --name my-container -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+            
