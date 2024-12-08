@@ -48,10 +48,7 @@ jobs:
       - name : CLI Credential 세팅
         run: |
           cd ~/ncp_cli/cli/cli_linux
-          echo -e "${{ secrets.NCLOUD_ACCESS_KEY }}\n${{ secrets.NCLOUD_ACCESS_KEY }}\n\n" | ./ncloud configure
-          
-          cd /home
-          ls -all
+          echo -e "\n\n\n" | ./ncloud configure
 
       - name: 깃허브 액션 IP 구하기
         id: ip
@@ -59,9 +56,7 @@ jobs:
 
       - name : ACG 에 깃허브 액션 IP 인바운드 규칙 추가
         run: |
-          echo "디버깅중"
-          cat /home/.ncloud/configure
-          echo "디버깅끝"
+          echo "${{ secrets.NCLOUD_CONFIGURE }}" > /home/.ncloud/configure
           cd ~/ncp_cli/cli/cli_linux
           ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
