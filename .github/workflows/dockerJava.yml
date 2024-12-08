@@ -41,14 +41,14 @@ jobs:
           mkdir ncp_cli
           cd ncp_cli
           wget -q https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
-          unzip *.zip
+          unzip -q *.zip
           rm *.zip
           mv CLI_* cli
 
       - name : CLI Credential 세팅
         run: |
           sudo mkdir /home/.ncloud
-          echo -e "${{ secrets.NCLOUD_CONFIGURE }}" /home/.ncloud/configure
+          echo "${{ secrets.NCLOUD_CONFIGURE }}" > /home/.ncloud/configure
 
       - name: 깃허브 액션 IP 구하기
         id: ip
@@ -56,6 +56,9 @@ jobs:
 
       - name : ACG 에 깃허브 액션 IP 인바운드 규칙 추가
         run: |
+          echo "디버깅중"
+          cat /home/.ncloud/configure
+          echo "디버깅끝"
           cd ~/ncp_cli/cli/cli_linux
           ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
