@@ -48,7 +48,6 @@ jobs:
       - name : CLI Credential 세팅
         run: |
           cd ~/ncp_cli/cli/cli_linux
-#          echo -e "\n\n\n" | ./ncloud configure
           echo -e "${{ secrets.NCLOUD_ACCESS_KEY }}\n${{ secrets.NCLOUD_ACCESS_KEY }}\n\n" | ./ncloud configure
 
 
