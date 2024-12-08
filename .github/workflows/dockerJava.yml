@@ -48,11 +48,10 @@ jobs:
           
           echo "~에서 봐야되나"
           cd ..
-# 현 위치는 ncp_cli 만든 디렉토리 안일테니..
           pwd
           ls -all
           
-          echo "~에서 봐야되나"
+          echo "home 에서 봐야되나"
           cd ..
           pwd
           ls -all
