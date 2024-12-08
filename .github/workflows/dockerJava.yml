@@ -38,27 +38,22 @@ jobs:
         run: |
           cd ~
           
-          echo "=============디버깅중================"
-          echo "=============디버깅중================"
-          echo "=============디버깅중================"
-          echo "~ 위치가 어디야"
-          pwd
+          mkdir ncp_cli
+          cd ncp_cli
+          wget -q https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
+          unzip *.zip
+          rm *.zip
+          mv CLI_* cli
+          
           
           echo "home 에서 봐야되나"
           cd ..
           pwd
           ls -all
-          
+
           echo "=============디버깅끝================"
           echo "=============디버깅끝================"
           echo "=============디버깅끝================"
-          
-#          mkdir ncp_cli
-#          cd ncp_cli
-#          wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
-#          unzip *.zip
-#          rm *.zip
-#          mv CLI_* cli
 #
 #      - name : CLI Credential 세팅
 #        run: |
