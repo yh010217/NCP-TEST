@@ -21,7 +21,6 @@ jobs:
           host: ${{ secrets.NCP_HOST_IP }}
           username: ${{ secrets.NCP_USERNAME }}
           password: ${{ secrets.NCP_PASSWORD }}
-          key: ${{ secrets.NCP_PRIVATE_KEY }}
           script_stop: true
           script: |
             echo "hello"
