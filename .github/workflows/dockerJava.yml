@@ -34,7 +34,7 @@ jobs:
 #          docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
 #            - name: Get Github Actions IP
 
-      - name: NCP CLI 다운
+      - name: NCP CLI 다운, 이름 편하게 cli라고만 하고 끝내기
         run: |
           cd ~
           mkdir ncp_cli
@@ -42,6 +42,7 @@ jobs:
           wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
           unzip *.zip
           rm *.zip
+          mv CLI_* cli
 
       - name : CLI Credential 세팅
         run: |
