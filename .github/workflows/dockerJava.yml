@@ -34,22 +34,29 @@ jobs:
 #          docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
 #            - name: Get Github Actions IP
 
-      - name: NCP CLI 다운, NCP CLI & Credentials 세팅
+      - name: NCP CLI 다운
         run: |
+          cd ~
           mkdir ncp_cli
           cd ncp_cli
           wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
           unzip *.zip
           rm *.zip
-          cd ~
-          ls -all
-          cd ~/.ncloud
-          ls
-          mv CLI_* cli
-          cd cli/cli_linux
-          
 
-      - name: 됐는지 확인
+      - name : CLI Credential 세팅
         run: |
-          cd ncp_cli/cli/cli_linux
-          .ncloud configure list
+          mkdir ~/.ncloud
+          echo -e "${{ secrets.NCLOUD_CONFIGURE }}" ~/.ncloud/configure
+
+      - name: 깃허브 액션 IP 구하기
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name : ACG 에 깃허브 액션 IP 인바운드 규칙 추가
+        run: |
+          cd ~/ncp_cli/cli/cli_linux
+          ./ncloud vserver addAccessControlGroupInboundRule \
+          --regionCode KR \
+          --vpcNo ${{ secrets.NCLOUD_VPC_NO }} \
+          --accessControlGroupNo ${{ secrets.NCLOUD_ACG_NO }} \
+          --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"
