@@ -10,6 +10,13 @@ on:
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+
+    env: # GitHub Actions Secrets를 docker-compose.yml 에서의 환경 변수로 설정
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+
+
     steps:
       - name: Github Repository에 올린 파일 불러오기
         uses: actions/checkout@v2
@@ -19,7 +26,7 @@ jobs:
 
       - name: 도커 이미지 만들기
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest .
+          docker-compose -f docker-compose.yml build
 
       - name: 도커 로그인
         uses: docker/login-action@v2
@@ -30,7 +37,7 @@ jobs:
 
       - name: 도커 이미지 푸시하기
         run: |
-         docker push ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+          docker-compose -f docker-compose.yml push
 
       - name: NCP CLI 다운로드, 이름 편하게 cli라고만 하고 끝내기
         run: |
@@ -72,12 +79,12 @@ jobs:
           username: ${{ secrets.NCP_USERNAME }}
           password: ${{ secrets.NCP_PASSWORD }}
           script_stop: true
-          script: |            
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
-            docker stop my-container || true
-            docker rm my-container || true
-            docker run -d --name my-container -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
-
+          script: |
+            docker-compose -f docker-compose.yml pull >> /tmp/deploy.log 2>&1
+            docker-compose -f docker-compose.yml down || true
+            docker-compose -f docker-compose.yml up -d >> /tmp/deploy.log 2>&1
+          # >> /tmp/deploy.log  이건 출력을 deploy.log에 적으란거고
+          # 2>&1 은 stderr를 stdout 에 리다이렉트
 
       - name: ACG 에 깃허브 액션 IP 인바운드 규칙 삭제
         run: |
