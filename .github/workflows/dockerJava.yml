@@ -95,7 +95,7 @@ jobs:
           script_stop: true
           script: |
             docker-compose -f docker-compose.yml pull >> /tmp/deploy.log 2>&1
-            docker-compose -f docker-compose.yml down || true
+            docker-compose -f docker-compose.yml down --remove-orphans || true
             docker-compose -f docker-compose.yml up -d >> /tmp/deploy.log 2>&1
           # >> /tmp/deploy.log  이건 출력을 deploy.log에 적으란거고
           # 2>&1 은 stderr를 stdout 에 리다이렉트
