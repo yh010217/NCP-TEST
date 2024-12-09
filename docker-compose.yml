@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # 로컬 8080 포트를 컨테이너의 8080 포트에 연결
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/test
+#      SPRING_DATASOURCE_USERNAME: test_user
+#      SPRING_DATASOURCE_PASSWORD: qifdnsckjnoiejralfsd23o4jrfodivb0
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: qifdnsckjnoiejralfsd23o4jrfodivb0
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432" # 로컬 5432 포트를 컨테이너의 5432 포트에 연결
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
