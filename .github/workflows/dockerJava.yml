@@ -77,6 +77,14 @@ jobs:
           --accessControlGroupNo ${{ secrets.NCLOUD_ACG_NO }} \
           --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"
 
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.NCP_HOST_IP }}
+          username: ${{ secrets.NCP_USERNAME }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          source: "docker-compose.yml"
+          target: "/root/" # EC2 서버의 디렉터리 경로
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
         uses: appleboy/ssh-action@master
