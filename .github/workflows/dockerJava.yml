@@ -82,7 +82,7 @@ jobs:
           --accessControlGroupNo ${{ secrets.NCLOUD_ACG_NO }} \
           --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"
 
-      - name: Copy docker-compose.yml to EC2
+      - name: docker-compose.yml 전송
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.NCP_HOST_IP }}
@@ -99,8 +99,11 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           script_stop: true
           script: |
+            echo "디버깅중"
             docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+            echo "디버깅중"
             docker-compose -f docker-compose.yml up -d >> /tmp/deploy.log 2>&1
+            echo "디버깅중"
           # docker-compose -f docker-compose.yml down || true
           # >> /tmp/deploy.log  이건 출력을 deploy.log에 적으란거고
           # 2>&1 은 stderr를 stdout 에 리다이렉트
