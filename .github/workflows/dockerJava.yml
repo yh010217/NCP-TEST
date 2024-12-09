@@ -34,9 +34,6 @@ jobs:
       - name: 스프링부트 도커 이미지 만들기
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest .
-
-      - name: 도커-컴포즈 이미지 만들기
-        run: |
           docker-compose -f docker-compose.yml build
 
       - name: 도커 로그인
@@ -67,10 +64,5 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           script_stop: true
           script: |
-            echo "디버깅중"
             docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
-            echo "디버깅중"
-            docker-compose -f docker-compose.yml up -d >> /tmp/deploy.log 2>&1
-            echo "디버깅중"
-            
-            
+            docker-compose up -d >> /tmp/deploy.log 2>&1

@@ -2,9 +2,7 @@ version: '3.3'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
     ports:
       - "8080:8080" # 로컬 8080 포트를 컨테이너의 8080 포트에 연결
     depends_on:
