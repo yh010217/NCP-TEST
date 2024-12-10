@@ -55,7 +55,7 @@ jobs:
           "docker-compose.yml"
           ".env"
           "java-app.jar"
-          target: "/root/project/" # EC2 서버의 디렉터리 경로
+          target: "/root/project/"
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
         uses: appleboy/ssh-action@master
