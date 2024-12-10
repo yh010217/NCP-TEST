@@ -65,5 +65,6 @@ jobs:
           script_stop: true
           script: |
             cd /root/project
+            sudo chmod +x java-app.jar
             docker-compose build
             docker-compose up -d
