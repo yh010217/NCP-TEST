@@ -1,8 +1,10 @@
-version: '3.3'
+version: '3.8'
 
 services:
   app:
-    image: ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080" # 로컬 8080 포트를 컨테이너의 8080 포트에 연결
     depends_on:
@@ -12,9 +14,9 @@ services:
     image: postgres:15
     container_name: postgres-db
     environment:
-      POSTGRES_USER: test_user
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_DB: test
+      POSTGRES_USER: "${POSTGRES_USER:-test_user}"
+      POSTGRES_PASSWORD: "${POSTGRES_USER:-test_password}"
+      POSTGRES_DB: "${POSTGRES_DB:-test}"
       # 도커에서 처음 postgres 설치하면서 만드는 슈퍼유저.
       # 한번 만들어진 상태면 유저 생성 더 안함. NCP에는 이런 비번 아님
     ports:

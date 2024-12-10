@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - name: application.yml 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
@@ -30,18 +30,3 @@ jobs:
 
       - name: 빌드된 파일 이름 변경하기
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
-
-      - name: Install NCP CLI
-        run: |
-          curl -s https://static.ncloud.com/cli/install.sh | bash
-        
-
-      - name: Get Actions IP - 이 IP로 EC2 보안그룹 임시 변경
-        id: ip
-        uses: haythem/public-ip@v1.3
-
-      - name: NCP에 ip 추가..?
-        run: |
-          ncloud vserver addAccessControlGroupInboundRule \
-          --regionCode KR --vpcNo 86263 --accessControlGroupNo ***63 \
-          --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='22'"

@@ -15,46 +15,47 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-
+      DB_DOMAIN: db
+      SPRING_DDL_AUTO: update
 
     steps:
       - name: Github Repository에 올린 파일 불러오기
         uses: actions/checkout@v2
 
+      - name: JDK 21 버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: .env 파일 만들기 -> docker-compose.yml 이 ncp 에서 사용
+        run: |
+          echo POSTGRES_USER=${{ POSTGRES_USER }} > .env
+          echo POSTGRES_PASSWORD=${{ POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_DB=${{ POSTGRES_DB }} >> .env
+
       - name: application.yml 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
 
-      - name: docker-compose 설치..
+      - name: 테스트 및 빌드하기
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.26.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
+          chmod +x ./gradlew
+          ./gradlew clean build
 
+      - name: 빌드된 파일 이름 변경하기
+        run: mv ./build/libs/*SNAPSHOT.jar ./java-app.jar
 
-      - name: 스프링부트 도커 이미지 만들기
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest .
-          docker-compose -f docker-compose.yml build
-
-      - name: 도커 로그인
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_LOGINID }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-
-      - name: 도커 이미지 푸시하기
-        run: |
-          docker-compose -f docker-compose.yml push
-
-      - name: docker-compose.yml 전송
+      - name: 필요 파일 scp 전송
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.NCP_HOST_IP }}
           username: ${{ secrets.NCP_USERNAME }}
           password: ${{ secrets.NCP_PASSWORD }}
-          source: "docker-compose.yml"
-          target: "/root/" # EC2 서버의 디렉터리 경로
+          source: |
+          "docker-compose.yml"
+          ".env"
+          "java-app.jar"
+          target: "/root/project/" # EC2 서버의 디렉터리 경로
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
         uses: appleboy/ssh-action@master
@@ -64,5 +65,6 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           script_stop: true
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_test:latest
-            docker-compose up -d >> /tmp/deploy.log 2>&1
+            cd /root/project
+            docker-compose build
+            docker-compose up -d
