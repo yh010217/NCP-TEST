@@ -51,8 +51,7 @@ jobs:
           host: ${{ secrets.NCP_HOST_IP }}
           username: ${{ secrets.NCP_USERNAME }}
           password: ${{ secrets.NCP_PASSWORD }}
-          source: |
-          "docker-compose.yml,.env,java-app.jar"
+          source: "docker-compose.yml,.env,java-app.jar"
           target: "/root/project/"
 
       - name: SSH로 EC2 원격 접속해서 실행시키기
