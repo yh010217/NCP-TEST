@@ -30,9 +30,9 @@ jobs:
 
       - name: .env 파일 만들기 -> docker-compose.yml 이 ncp 에서 사용
         run: |
-          echo "POSTGRES_USER=${{ POSTGRES_USER }}" > .env
-          echo "POSTGRES_PASSWORD=${{ POSTGRES_PASSWORD }}" >> .env
-          echo "POSTGRES_DB=${{ POSTGRES_DB }}" >> .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
 
       - name: application.yml 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
